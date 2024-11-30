@@ -1,0 +1,14 @@
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\bin\Debug\net8.0\Titanium-Sharp.exe
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\bin\Debug\net8.0\Titanium-Sharp.deps.json
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\bin\Debug\net8.0\Titanium-Sharp.runtimeconfig.json
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\bin\Debug\net8.0\Titanium-Sharp.dll
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\bin\Debug\net8.0\Titanium-Sharp.pdb
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\obj\Debug\net8.0\Titanium-Sharp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\obj\Debug\net8.0\Titanium-Sharp.AssemblyInfoInputs.cache
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\obj\Debug\net8.0\Titanium-Sharp.AssemblyInfo.cs
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\obj\Debug\net8.0\Titanium-Sharp.csproj.CoreCompileInputs.cache
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\obj\Debug\net8.0\Titanium-Sharp.dll
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\obj\Debug\net8.0\refint\Titanium-Sharp.dll
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\obj\Debug\net8.0\Titanium-Sharp.pdb
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\obj\Debug\net8.0\Titanium-Sharp.genruntimeconfig.cache
+C:\Users\Liam\Documents\Projects\Titanium-Sharp\Titanium-Sharp\obj\Debug\net8.0\ref\Titanium-Sharp.dll
