@@ -11,6 +11,7 @@ public class Proxy
   private UdpClient _proxyUdpClient = new();
   private TcpClient _proxyTcpClient = new();
 
+  private Socket _udpSocket;
   private NetworkStream _stream;
   
   private bool _connectedToProxy = false;
@@ -31,7 +32,7 @@ public class Proxy
     _player = player;
     _connectedServer = remoteServer;
     
-    _proxyUdpClient.Connect(remoteServer.IpAddress, remoteServer.Port);
+    // _proxyUdpClient.Connect(remoteServer.IpAddress, remoteServer.Port);
     _proxyTcpClient.Connect(remoteServer.IpAddress, remoteServer.Port);
 
     _connectedToProxy = true;
@@ -45,8 +46,11 @@ public class Proxy
 
   private void ProxyUdpLoop()
   {
-    IPEndPoint proxyIpEndPoint = new IPEndPoint(IPAddress.Any, 0);
-
+    IPEndPoint proxyIpEndPoint = new IPEndPoint(_connectedServer.IpAddress, _connectedServer.Port);
+    
+    _proxyUdpClient.Client.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0));
+    Console.WriteLine(_proxyUdpClient.Client.LocalEndPoint.ToString());
+    
     try
     {
       while (_connectedToProxy)
@@ -55,6 +59,8 @@ public class Proxy
 
         if (_hasAuthenticated)
         {
+          Console.WriteLine(BitConverter.ToString(proxyRecieve));
+          
           Vars.GlobalUdpServer.Send(
             new ReadOnlySpan<byte>(proxyRecieve),
             _playerUdpAddress.IpAddress.ToString(),
@@ -71,6 +77,7 @@ public class Proxy
   private void ProxyTcpLoop()
   {
     _stream = _proxyTcpClient.GetStream();
+    
     try
     {
       while (_connectedToProxy)
@@ -100,7 +107,10 @@ public class Proxy
                 int idFromServer = buf.GetInt();
                 HelloPacket packet = new(idFromServer);
 
-                _proxyUdpClient.Send(packet.GetBuffer().Export());
+                _proxyUdpClient.Send(
+                  new ReadOnlySpan<byte>(packet.GetBuffer().Export()),
+                  _connectedServer.IpAddress.ToString(),
+                  _connectedServer.Port);
                 break;
               case 3:
                 PlayerConnectPacket connect = new()
@@ -124,8 +134,9 @@ public class Proxy
                 data = data.Add(buffer);
                 
                 _stream.Write(data.Export());
+                _stream.Write([ 0x00, 0x04, 0x16, 0x00, 0x00, 0x00 ]);
+                
                 _hasAuthenticated = true;
-
                 continue;
             }
 
@@ -142,6 +153,19 @@ public class Proxy
     {
       // Ignored
     }
+  }
+
+  public void OnTcpPacketFromClient(Buffer buf)
+  {
+    _stream.Write(buf.Export());
+  }
+  
+  public void OnUdpPacketFromClient(byte[] buf)
+  {
+    _proxyUdpClient.Send(
+      new ReadOnlySpan<byte>(buf),
+      _connectedServer.IpAddress.ToString(),
+      _connectedServer.Port);
   }
 
   public void Close()

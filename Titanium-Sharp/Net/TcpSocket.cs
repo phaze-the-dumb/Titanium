@@ -29,7 +29,10 @@ public class TcpSocket
 
       if (length > 0)
       {
-        OnMessage.Invoke(Buffer.From(buffer));
+        byte[] dat = new byte[length];
+        Array.Copy(buffer, dat, length);
+        
+        OnMessage.Invoke(Buffer.From(dat));
       }
       else
       {

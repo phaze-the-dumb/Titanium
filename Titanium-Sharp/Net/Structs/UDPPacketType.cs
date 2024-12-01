@@ -4,5 +4,6 @@ public enum UDPPacketType
 {
   ServerData,
   Authentication,
-  Unknown
+  Unknown,
+  Proxyable
 }

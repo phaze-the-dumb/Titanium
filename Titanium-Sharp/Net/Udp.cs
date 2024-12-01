@@ -7,6 +7,7 @@ namespace Titanium.Net;
 public class UdpServer
 {
   public Action<UDPPacket, Address> OnRecievePacket;
+  public Action<byte[], string> OnRecieveProxyablePacket;
 
   private int _port;
   private UdpClient _listener;
@@ -41,6 +42,10 @@ public class UdpServer
             OnRecievePacket.Invoke(new UDPPacket(UDPPacketType.Unknown, bytes), new Address(groupEp.Address, groupEp.Port));
             break;
         }
+      }
+      else
+      {
+        OnRecieveProxyablePacket.Invoke(bytes, groupEp.Address + ":" + groupEp.Port);
       }
     }
   }

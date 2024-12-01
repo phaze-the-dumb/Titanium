@@ -31,6 +31,16 @@ public class Main
     Console.WriteLine("UDP Server Started.");
     UdpServer udpServer = new(_port);
 
+    Dictionary<string, Player> playerMap = new Dictionary<string, Player>();
+
+    udpServer.OnRecieveProxyablePacket += (buf, addr) =>
+    {
+      Player plyr = playerMap[addr];
+      if (plyr == null) return;
+
+      plyr.OnRecieveUdpPacket(buf);
+    };
+    
     udpServer.OnRecievePacket += ( p, addr ) =>
     {
       switch (p.Type)
@@ -41,8 +51,10 @@ public class Main
         case UDPPacketType.Authentication:
           AuthenticationPacket packet = new AuthenticationPacket(p);
           var player = _players.Find(x => x.ID == packet.ID);
-
+          
           if (player == null) return;
+          
+          playerMap.Add(addr.IpAddress + ":" + addr.Port, player);
           player.SetUdpAddress(addr);
           
           break;
@@ -76,6 +88,9 @@ public class Main
             p.Join(packet);
             
             p.JoinTo(new Address(IPAddress.Parse("127.0.0.1"), 6568));
+            break;
+          default:
+            p.OnRecieveTcpPacket(buffer);
             break;
         }
       };

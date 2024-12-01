@@ -26,7 +26,7 @@ public class Player
 
   private int _connector;
 
-  private Proxy _proxy;
+  private Proxy? _proxy;
   
   public int Version
   {
@@ -76,7 +76,7 @@ public class Player
   public Colour Colour
   {
     get { return _colour; }
-  }  
+  }
   
   public int Connector
   {
@@ -128,7 +128,7 @@ public class Player
   public void Leave()
   {
     Console.WriteLine(_name + " (" + _uuid + ") Left.");
-    _proxy.Close();
+    _proxy?.Close();
   }
 
   public void Kick(KickReason reason)
@@ -159,5 +159,15 @@ public class Player
   public Address GetUdpAddress()
   {
     return _udpAddress;
+  }
+
+  public void OnRecieveTcpPacket(Buffer buf)
+  {
+    _proxy?.OnTcpPacketFromClient(buf);
+  }
+  
+  public void OnRecieveUdpPacket(byte[] buf)
+  {
+    _proxy?.OnUdpPacketFromClient(buf);
   }
 }
