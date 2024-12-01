@@ -77,4 +77,12 @@ public class Player
   {
     Console.WriteLine(_name + " (" + _uuid + ") Left.");
   }
+
+  public void Kick(KickReason reason)
+  {
+    Buffer buf = new();
+    buf.PutBytes([ 1, 0, (byte)reason ]);
+    
+    _socket.Send(NetSerialiser.WritePacketType(PacketType.KickPacket, 3).Add(buf));
+  }
 }

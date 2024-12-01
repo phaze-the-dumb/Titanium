@@ -35,6 +35,9 @@ public class UdpServer
           case 3:
             OnRecievePacket.Invoke(new UDPPacket(UDPPacketType.Authentication, bytes), new Address(groupEp.Address, groupEp.Port));
             break;
+          default:
+            OnRecievePacket.Invoke(new UDPPacket(UDPPacketType.Unknown, bytes), new Address(groupEp.Address, groupEp.Port));
+            break;
         }
       }
     }

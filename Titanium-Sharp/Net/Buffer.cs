@@ -85,6 +85,21 @@ public class Buffer
     PutByte(Convert.ToByte(text.Length));
     PutBytes(dat);
   }
+  
+  public void PutStringChecked(string text)
+  {
+    PutBytes([ 1, 0 ]);
+    var dat = Encoding.ASCII.GetBytes(text);
+
+    PutByte(Convert.ToByte(text.Length));
+    PutBytes(dat);
+  }
+
+  public Buffer Add(Buffer buf)
+  {
+    PutBytes(buf.Export());
+    return this;
+  }
 
   internal Byte[] Export()
   {

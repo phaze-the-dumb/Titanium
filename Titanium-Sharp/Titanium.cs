@@ -3,17 +3,19 @@ using Titanium.Net;
 using Titanium.Net.Structs;
 using Titanium.Packets.TCP;
 using Titanium.Packets.UDP;
+using Buffer = Titanium.Net.Buffer;
 
 namespace Titanium;
 
 public class Main
 {
-  private int _port = 6567;
+  private int _port;
 
   private List<Player> _players = new();
   
-  public Main()
+  public Main(int port)
   {
+    _port = port;
     Console.WriteLine("Titanium Started! Hello World.");
     
     Thread udpThread = new Thread(UdpLoop){ Name = "UdpThread" };
@@ -63,11 +65,17 @@ public class Main
       
       socket.OnMessage += buffer =>
       {
-        if (buffer.GetInt() == 4850432 && buffer.GetInt() == 1140977717)
-        {
-          PlayerConnectPacket packet = new(buffer);
-          
-          p.Join(packet);
+        PacketType type = NetSerialiser.GetPacketType(buffer);
+        
+        switch(type){
+          case PacketType.ConnectPacket:
+            buffer.GetBytes(4);
+            
+            PlayerConnectPacket packet = new(buffer);
+            p.Join(packet);
+            
+            p.Kick(KickReason.Whitelist);
+            break;
         }
       };
 
