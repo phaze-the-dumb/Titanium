@@ -5,7 +5,7 @@ namespace Titanium.Net;
 
 public class TcpSocket
 {
-  public Action<Buffer> OnMessage;
+  public Action<byte[]> OnMessage;
   public Action OnClose;
 
   private NetworkStream _stream;
@@ -32,7 +32,7 @@ public class TcpSocket
         byte[] dat = new byte[length];
         Array.Copy(buffer, dat, length);
         
-        OnMessage.Invoke(Buffer.From(dat));
+        OnMessage.Invoke(dat);
       }
       else
       {

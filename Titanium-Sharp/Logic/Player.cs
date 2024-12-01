@@ -161,7 +161,7 @@ public class Player
     return _udpAddress;
   }
 
-  public void OnRecieveTcpPacket(Buffer buf)
+  public void OnRecieveTcpPacket(byte[] buf)
   {
     _proxy?.OnTcpPacketFromClient(buf);
   }

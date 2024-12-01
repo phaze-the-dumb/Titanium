@@ -76,8 +76,9 @@ public class Main
       socket.Send(new WelcomePacket(p).GetBuffer());
       _players.Add(p);
       
-      socket.OnMessage += buffer =>
+      socket.OnMessage += buf =>
       {
+        Buffer buffer = Buffer.From(buf);
         PacketType type = NetSerialiser.GetPacketType(buffer).Item1;
         
         switch(type){
@@ -90,7 +91,7 @@ public class Main
             p.JoinTo(new Address(IPAddress.Parse("127.0.0.1"), 6568));
             break;
           default:
-            p.OnRecieveTcpPacket(buffer);
+            p.OnRecieveTcpPacket(buf);
             break;
         }
       };

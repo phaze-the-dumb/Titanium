@@ -47,9 +47,7 @@ public class Proxy
   private void ProxyUdpLoop()
   {
     IPEndPoint proxyIpEndPoint = new IPEndPoint(_connectedServer.IpAddress, _connectedServer.Port);
-    
     _proxyUdpClient.Client.Bind(new IPEndPoint(IPAddress.Parse("127.0.0.1"), 0));
-    Console.WriteLine(_proxyUdpClient.Client.LocalEndPoint.ToString());
     
     try
     {
@@ -59,8 +57,6 @@ public class Proxy
 
         if (_hasAuthenticated)
         {
-          Console.WriteLine(BitConverter.ToString(proxyRecieve));
-          
           Vars.GlobalUdpServer.Send(
             new ReadOnlySpan<byte>(proxyRecieve),
             _playerUdpAddress.IpAddress.ToString(),
@@ -134,7 +130,8 @@ public class Proxy
                 data = data.Add(buffer);
                 
                 _stream.Write(data.Export());
-                _stream.Write([ 0x00, 0x04, 0x16, 0x00, 0x00, 0x00 ]);
+                
+                // _stream.Write([ 0x00, 0x04, 0x16, 0x00, 0x00, 0x00 ]);
                 
                 _hasAuthenticated = true;
                 continue;
@@ -155,9 +152,9 @@ public class Proxy
     }
   }
 
-  public void OnTcpPacketFromClient(Buffer buf)
+  public void OnTcpPacketFromClient(byte[] buf)
   {
-    _stream.Write(buf.Export());
+    _stream.Write(buf);
   }
   
   public void OnUdpPacketFromClient(byte[] buf)
