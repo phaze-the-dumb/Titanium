@@ -19,6 +19,8 @@ public class UdpServer
   public void Run()
   {
     _listener = new(_port);
+    Vars.GlobalUdpServer = _listener;
+    
     var groupEp = new IPEndPoint(IPAddress.Any, _port);
 
     while (true)
@@ -45,7 +47,7 @@ public class UdpServer
 
   public void SendTo(Packet packet, Address addr)
   {
-    var dat = packet.Bytes.Export();
+    var dat = packet.GetBuffer().Export();
     _listener.Send(dat, dat.Length, addr.IpAddress.ToString(), addr.Port);
   }
 }

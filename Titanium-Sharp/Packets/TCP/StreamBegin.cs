@@ -1,8 +1,10 @@
-﻿using Buffer = Titanium.Net.Buffer;
+﻿using Titanium.Net;
+using Titanium.Net.Structs;
+using Buffer = Titanium.Net.Buffer;
 
 namespace Titanium.Packets.TCP;
 
-public class StreamBegin
+public class StreamBeginPacket : Packet
 {
   private static int _lastId = 0;
 
@@ -10,7 +12,7 @@ public class StreamBegin
   public int Total;
   public byte Type;
 
-  public Buffer GetBuffer()
+  public override Buffer GetBuffer()
   {
     Buffer buf = new();
     
@@ -18,6 +20,6 @@ public class StreamBegin
     buf.PutInt(Total);
     buf.PutByte(Type);
 
-    return buf;
+    return NetSerialiser.WritePacketType(PacketType.StreamBegin, buf.Length()).Add(buf);
   }
 }

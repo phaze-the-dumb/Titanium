@@ -6,5 +6,6 @@ public enum PacketType
   StreamChunk,
   WorldStream,
   ConnectPacket,
-  KickPacket = 45
+  KickPacket = 45,
+  FrameworkPacket = 254
 }

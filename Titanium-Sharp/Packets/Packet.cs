@@ -3,12 +3,7 @@ using Buffer = Titanium.Net.Buffer;
 
 namespace Titanium;
 
-public class Packet
+public abstract class Packet
 {
-  protected Buffer _buf = new();
-  
-  public Buffer Bytes
-  {
-    get { return _buf; }
-  }
+  public abstract Buffer GetBuffer();
 }

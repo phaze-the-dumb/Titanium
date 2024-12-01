@@ -30,6 +30,12 @@ public class Buffer
     return dat;
   }
 
+  public short GetShort()
+  {
+    var dat = GetBytes(2);
+    return BitConverter.ToInt16(dat.Reverse().ToArray());
+  }
+
   public int GetInt()
   {
     var dat = GetBytes(4);
@@ -70,6 +76,14 @@ public class Buffer
     _data.AddRange(dat);
   }
 
+  public void PutShort(short num)
+  {
+    var dat = BitConverter.GetBytes(num)
+      .Reverse().ToArray();
+
+    PutBytes(dat);
+  }
+
   public void PutInt(int num)
   {
     var dat = BitConverter.GetBytes(num)
@@ -99,6 +113,11 @@ public class Buffer
   {
     PutBytes(buf.Export());
     return this;
+  }
+
+  public short Length()
+  {
+    return (short)_data.Count;
   }
 
   internal Byte[] Export()

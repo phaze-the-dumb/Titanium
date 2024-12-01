@@ -3,18 +3,16 @@ using Buffer = Titanium.Net.Buffer;
 
 namespace Titanium.Packets.TCP;
 
-public class WelcomePacket : Packet
+public class HelloPacket : Packet
 {
   private Buffer _buf = new();
   
-  public WelcomePacket(Player player)
+  public HelloPacket(int id)
   {
-    _buf.PutByte(0);
-    _buf.PutByte(6);
     _buf.PutByte(254);
-    _buf.PutByte(4);
+    _buf.PutByte(3);
     
-    _buf.PutInt(player.ID);
+    _buf.PutInt(id);
   }
 
   public override Buffer GetBuffer()

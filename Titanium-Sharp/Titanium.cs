@@ -1,3 +1,4 @@
+using System.Net;
 using Titanium.Logic;
 using Titanium.Net;
 using Titanium.Net.Structs;
@@ -60,21 +61,21 @@ public class Main
     {
       Player p = new(socket);
       
-      socket.Send(new WelcomePacket(p).Bytes);
+      socket.Send(new WelcomePacket(p).GetBuffer());
       _players.Add(p);
       
       socket.OnMessage += buffer =>
       {
-        PacketType type = NetSerialiser.GetPacketType(buffer);
+        PacketType type = NetSerialiser.GetPacketType(buffer).Item1;
         
         switch(type){
           case PacketType.ConnectPacket:
-            buffer.GetBytes(4);
+            PlayerConnectPacket packet = new();
+            packet.Read(buffer);
             
-            PlayerConnectPacket packet = new(buffer);
             p.Join(packet);
             
-            p.Kick(KickReason.Whitelist);
+            p.JoinTo(new Address(IPAddress.Parse("127.0.0.1"), 6568));
             break;
         }
       };

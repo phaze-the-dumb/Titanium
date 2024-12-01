@@ -1,4 +1,6 @@
-﻿using Titanium.Net;
+﻿using System.Net;
+using System.Net.Sockets;
+using Titanium.Net;
 using Titanium.Net.Structs;
 using Titanium.Packets.TCP;
 using Buffer = Titanium.Net.Buffer;
@@ -21,15 +23,64 @@ public class Player
   
   private Address? _udpAddress;
   private TcpSocket _socket;
+
+  private int _connector;
+
+  private Proxy _proxy;
+  
+  public int Version
+  {
+    get { return _version; }
+  }
+  
+  public string VersionType
+  {
+    get { return _versionType; }
+  }
+  
+  public List<string> Mods
+  {
+    get { return _mods; }
+  }
+  
+  public string Locale
+  {
+    get { return _locale; }
+  }
   
   public int ID
   {
     get { return _id; }
-  }  
+  }
   
   public string Name
   {
     get { return _name; }
+  }
+  
+  public string Uuid
+  {
+    get { return _uuid; }
+  }
+  
+  public string Usid
+  {
+    get { return _usid; }
+  }
+  
+  public bool Mobile
+  {
+    get { return _mobile; }
+  }
+  
+  public Colour Colour
+  {
+    get { return _colour; }
+  }  
+  
+  public int Connector
+  {
+    get { return _connector; }
   }
 
   public Player(TcpSocket socket)
@@ -51,6 +102,7 @@ public class Player
     _usid = packet.Usid;
     _mobile = packet.Mobile;
     _colour = packet.Colour;
+    _connector = packet.Connector;
     
     Console.WriteLine(_name + " (" + _uuid + ") Joined.");
   }
@@ -76,13 +128,36 @@ public class Player
   public void Leave()
   {
     Console.WriteLine(_name + " (" + _uuid + ") Left.");
+    _proxy.Close();
   }
 
   public void Kick(KickReason reason)
   {
     Buffer buf = new();
-    buf.PutBytes([ 1, 0, (byte)reason ]);
-    
+    buf.PutBytes([1, 0, (byte)reason]);
+
     _socket.Send(NetSerialiser.WritePacketType(PacketType.KickPacket, 3).Add(buf));
+    _socket.Close();
+  }
+
+  public void JoinTo(Address remoteServer)
+  {
+    _proxy = new(this, remoteServer);
+  }
+
+  public void SendTcp(Packet packet, PacketType type)
+  {
+    Buffer buf = packet.GetBuffer();
+    _socket.Send(NetSerialiser.WritePacketType(PacketType.KickPacket, buf.Length()).Add(buf));
+  }
+
+  public TcpSocket GetTcpSocket()
+  {
+    return _socket;
+  }
+
+  public Address GetUdpAddress()
+  {
+    return _udpAddress;
   }
 }

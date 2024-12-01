@@ -24,7 +24,7 @@ public class TcpSocket
 
     while (_closed == false)
     {
-      var buffer = new byte[1_024];
+      var buffer = new byte[8_192];
       var length = _stream.Read(buffer);
 
       if (length > 0)
@@ -42,6 +42,12 @@ public class TcpSocket
   {
     if(!_closed)
       _stream.Write(buf.Export());
+  }
+  
+  public void SendRaw(byte[] buf)
+  {
+    if(!_closed)
+      _stream.Write(buf);
   }
 
   public void Close()

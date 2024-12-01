@@ -4,6 +4,8 @@ namespace Titanium.Packets.UDP;
 
 public class ServerDataPacket : Packet
 {
+  private Buffer _buf = new();
+  
   public ServerDataPacket()
   {
     _buf.PutString("Test");
@@ -20,5 +22,10 @@ public class ServerDataPacket : Packet
     
     _buf.PutString("Server Desc");
     _buf.PutString("Hell");
+  }
+
+  public override Buffer GetBuffer()
+  {
+    return _buf;
   }
 }

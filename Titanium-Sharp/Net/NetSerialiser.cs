@@ -1,4 +1,6 @@
-﻿using Titanium.Net.Structs;
+﻿using Titanium.Logic;
+using Titanium.Net.Structs;
+using Titanium.Packets.TCP;
 
 namespace Titanium.Net;
 
@@ -8,25 +10,58 @@ public class NetSerialiser
   {
     Buffer buf = new();
     length += 2;
-    
-    buf.PutBytes(BitConverter.GetBytes(length).Reverse().ToArray());
+
+    buf.PutShort(length);
     
     buf.PutByte((byte)type);
     buf.PutByte(0); // No Compression
     
-    Console.WriteLine(BitConverter.ToString(buf.Export()));
     return buf;
   }
   
-  public static PacketType GetPacketType(Buffer buf)
+  public static ( PacketType, short, bool ) GetPacketType(Buffer buf)
   {
-    buf.GetBytes(2);
+    short length = buf.GetShort();
 
-    byte id = buf.GetByte();
+    PacketType id = (PacketType)buf.GetByte();
+
+    if (id == PacketType.FrameworkPacket)
+    {
+      // If it's a framework packet, we need the 4th byte to get the packet ID
+      return (id, length, false);
+    }
+    
+    // If it's not a framework packet, the 4th byte is the compression bool
     
     bool compression = buf.GetByte() == 1;
-    // I'll do compression eventually
+    return (id, length, compression);
+  }
 
-    return (PacketType)id;
+  public static void SendStream(Player player, byte[] data, PacketType type)
+  {
+    StreamBeginPacket begin = new();
+
+    begin.Total = data.Length;
+    begin.Type = (byte)type;
+    
+    player.SendTcp(begin, PacketType.StreamBegin);
+
+    int pointerIndex = 0;
+    while (pointerIndex <= data.Length)
+    {
+      int bytesLeft = data.Length - pointerIndex;
+      int chunkSize = Math.Min(bytesLeft, Vars.MaxTcpSize);
+      
+      byte[] bytes = new byte[chunkSize];
+      Array.Copy(data, pointerIndex, bytes, 0, chunkSize);
+      
+      pointerIndex += chunkSize;
+
+      StreamChunkPacket chunk = new();
+      chunk.ID = begin.ID;
+      chunk.Data = bytes;
+      
+      player.SendTcp(chunk, PacketType.StreamChunk);
+    }
   }
 }
