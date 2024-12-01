@@ -56,10 +56,7 @@ public class Main
 
     tcpServer.OnConnection += socket =>
     {
-      Console.WriteLine("TCP Client Connected");
       Player p = new(socket);
-      
-      Console.WriteLine("Connecting Player: " + p.ID + ". Stage 1");
       
       socket.Send(new WelcomePacket(p).Bytes);
       _players.Add(p);
@@ -68,24 +65,16 @@ public class Main
       {
         if (buffer.GetInt() == 4850432 && buffer.GetInt() == 1140977717)
         {
-          Console.WriteLine("Connecting Player: " + p.ID + ". Stage 2");
           PlayerConnectPacket packet = new(buffer);
           
-          Console.WriteLine(": " + packet.Version);
-          Console.WriteLine(": " + packet.VersionType);
-          Console.WriteLine(": " + packet.Name);
-          Console.WriteLine(": " + packet.Locale);
-          Console.WriteLine(": " + packet.Usid);
-          Console.WriteLine(": " + packet.Uuid);
-          Console.WriteLine(": " + packet.Mobile);
-          Console.WriteLine(": " + packet.Colour);
-          Console.WriteLine(": " + packet.Mods);
+          p.Join(packet);
         }
-      }; 
+      };
 
       socket.OnClose += () =>
       {
         _players.Remove(p);
+        p.Leave();
       };
     };
     

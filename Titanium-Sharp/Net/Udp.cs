@@ -27,7 +27,6 @@ public class UdpServer
 
       if (bytes[0] == 254)
       {
-        Console.WriteLine(bytes[1]);
         switch (bytes[1])
         {
           case 1:
