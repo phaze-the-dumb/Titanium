@@ -1,5 +1,4 @@
-﻿using Titanium.Logic;
-using Buffer = Titanium.Net.Buffer;
+﻿using Buffer = Titanium.Net.Buffer;
 
 namespace Titanium.Packets.TCP;
 

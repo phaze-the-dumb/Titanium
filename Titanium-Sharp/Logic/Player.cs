@@ -1,6 +1,4 @@
-﻿using System.Net;
-using System.Net.Sockets;
-using Titanium.Net;
+﻿using Titanium.Net;
 using Titanium.Net.Structs;
 using Titanium.Packets.TCP;
 using Buffer = Titanium.Net.Buffer;

@@ -13,6 +13,9 @@ public class Main
   private int _port;
 
   private List<Player> _players = new();
+
+  public Action<Player> OnPlayerJoin;
+  public Action<Player> OnPlayerLeave;
   
   public Main(int port)
   {
@@ -87,8 +90,9 @@ public class Main
             packet.Read(buffer);
             
             p.Join(packet);
-            
-            p.JoinTo(new Address(IPAddress.Parse("127.0.0.1"), 6568));
+            OnPlayerJoin.Invoke(p);
+
+            // p.JoinTo(new Address(IPAddress.Parse("127.0.0.1"), 6568));
             break;
           default:
             p.OnRecieveTcpPacket(buf);
@@ -100,6 +104,8 @@ public class Main
       {
         _players.Remove(p);
         p.Leave();
+
+        OnPlayerLeave.Invoke(p);
       };
     };
     
