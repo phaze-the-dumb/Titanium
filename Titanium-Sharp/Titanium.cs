@@ -91,8 +91,6 @@ public class Main
             
             p.Join(packet);
             OnPlayerJoin.Invoke(p);
-
-            // p.JoinTo(new Address(IPAddress.Parse("127.0.0.1"), 6568));
             break;
           default:
             p.OnRecieveTcpPacket(buf);
