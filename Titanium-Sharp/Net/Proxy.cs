@@ -32,7 +32,6 @@ public class Proxy
     _player = player;
     _connectedServer = remoteServer;
     
-    // _proxyUdpClient.Connect(remoteServer.IpAddress, remoteServer.Port);
     _proxyTcpClient.Connect(remoteServer.IpAddress, remoteServer.Port);
 
     _connectedToProxy = true;
@@ -124,6 +123,9 @@ public class Proxy
                 };
                 
                 connect.Write();
+                
+                Console.WriteLine(BitConverter.ToString(connect.GetBuffer().Export()));
+                
                 Buffer buffer = connect.GetBuffer();
                 Buffer data = NetSerialiser.WritePacketType(PacketType.ConnectPacket, buffer.Length());
                 
