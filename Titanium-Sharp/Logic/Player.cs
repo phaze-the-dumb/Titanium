@@ -134,7 +134,7 @@ public class Player
   public void Kick(KickReason reason)
   {
     Buffer buf = new();
-    buf.PutBytes(new byte[]{ 1, 0, (byte)reason });
+    buf.PutBytes([1, 0, (byte)reason]);
 
     _socket.Send(NetSerialiser.WritePacketType(PacketType.KickPacket, 3).Add(buf));
     _socket.Close();

@@ -32,7 +32,7 @@ public class Colour
 
   public int ToInt()
   {
-    byte[] bytes = { 255, (byte)_blue, (byte)_green, (byte)_red };
+    byte[] bytes = [ 255, (byte)_blue, (byte)_green, (byte)_red ];
     return BitConverter.ToInt32(bytes);
   }
 }

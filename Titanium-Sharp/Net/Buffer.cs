@@ -24,7 +24,7 @@ public class Buffer
 
   public byte[] GetBytes(int count)
   {
-    var dat = _data.GetRange(0, count).ToArray();
+    var dat = _data.Slice(0, count).ToArray();
     _data.RemoveRange(0, count);
 
     return dat;
@@ -44,37 +44,18 @@ public class Buffer
 
   public string GetStringChecked()
   {
-    // I have absolutely no idea how this works.
-    short utfLength = GetShort();
+    byte exists = GetByte();
+    if (exists == 0)
+    {
+      return "";
+    }
+
+    GetByte();
     
     int length = GetByte();
-    var dat = new List<byte>();
-    
-    int readBytes = 0;
-    for (int i = 0; i < _data.Count; i++)
-    {
-      if (dat.Count > length - 1) break;
-      byte b = _data[i];
+    var dat = GetBytes(length);
 
-      if (b == 0x1E && _data[i - 1] == 0xF0)
-      {
-        short copiedBytes = BitConverter.ToInt16(dat.GetRange(i - 3, 2).ToArray());
-        List<byte> bytes = dat.GetRange(i - 3 - copiedBytes, copiedBytes);
-        
-        dat.RemoveRange(i - 3, 3);
-        dat.AddRange(bytes);
-          
-        readBytes++;
-      }
-      else
-      {
-        dat.Add(b);
-        readBytes++;
-      }
-    }
-    
-    _data.RemoveRange(0, readBytes);
-    return Encoding.UTF8.GetString(dat.ToArray());
+    return Encoding.ASCII.GetString(dat);
   }
   
   public string GetString()
@@ -82,7 +63,7 @@ public class Buffer
     int length = GetByte();
     var dat = GetBytes(length);
 
-    return Encoding.UTF8.GetString(dat);
+    return Encoding.ASCII.GetString(dat);
   }
 
   public void PutByte(byte dat)
@@ -113,7 +94,7 @@ public class Buffer
 
   public void PutString(string text)
   {
-    var dat = Encoding.UTF8.GetBytes(text);
+    var dat = Encoding.ASCII.GetBytes(text);
 
     PutByte(Convert.ToByte(text.Length));
     PutBytes(dat);
@@ -121,8 +102,8 @@ public class Buffer
   
   public void PutStringChecked(string text)
   {
-    PutBytes(new byte[]{ 1, 0 });
-    var dat = Encoding.UTF8.GetBytes(text);
+    PutBytes([ 1, 0 ]);
+    var dat = Encoding.ASCII.GetBytes(text);
 
     PutByte(Convert.ToByte(text.Length));
     PutBytes(dat);
