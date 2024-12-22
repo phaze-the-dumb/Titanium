@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using Titanium.Logic;
 using Titanium.Net.Structs;
 
